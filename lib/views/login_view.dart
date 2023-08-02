@@ -1,7 +1,8 @@
-import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../firebase_options.dart';
+// import 'package:project0/views/register_view.dart';
+// import '../firebase_options.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -34,57 +35,54 @@ class _LoginViewState extends State<LoginView> {
       appBar: AppBar(
         title: const Text('Login'),
       ),
-      body: FutureBuilder(
-        // once future is performed, call the builder (return the entire Column Widget)
-        future: Firebase.initializeApp(
-            options: DefaultFirebaseOptions.currentPlatform),
-        builder: (context, snapshot) {
-          // snapshot => state of future
-          switch (snapshot.connectionState) {
-            case ConnectionState.done: 
-              return Column(
-                children: [
-                  TextField(
-                    controller: _email,
-                    decoration: const InputDecoration(
-                        hintText: 'Email:'), // placeholder
-                    enableSuggestions: false,
-                    autocorrect: false,
-                    keyboardType: TextInputType
-                        .emailAddress, // add @ to keyboard when typing in the email field
-                  ),
-                  TextField(
-                    controller: _password,
-                    decoration: const InputDecoration(hintText: 'Password:'),
-                    obscureText: true,
-                    enableSuggestions: false,
-                    autocorrect: false,
-                  ),
-                  TextButton(
-                    onPressed: () async {
-                      final email = _email.text;
-                      final password = _password.text;
-                      try {
-                        final userCredentials = await FirebaseAuth.instance
-                            .signInWithEmailAndPassword(
-                                email: email, password: password);
-                        print(userCredentials);
-                      } on FirebaseAuthException catch (e) {
-                        if (e.code == 'user-not-found') {
-                          print('User Not Found!');
-                        } else {
-                          print('Wrong Password!');
-                        }
-                      }
-                    },
-                    child: const Text('Login'),
-                  ),
-                ],
+      body: Column(
+        children: [
+          TextField(
+            controller: _email,
+            decoration:
+                const InputDecoration(hintText: 'Email:'), // placeholder
+            enableSuggestions: false,
+            autocorrect: false,
+            keyboardType: TextInputType
+                .emailAddress, // add @ to keyboard when typing in the email field
+          ),
+          TextField(
+            controller: _password,
+            decoration: const InputDecoration(hintText: 'Password:'),
+            obscureText: true,
+            enableSuggestions: false,
+            autocorrect: false,
+          ),
+          TextButton(
+            onPressed: () async {
+              final email = _email.text;
+              final password = _password.text;
+              try {
+                final userCredentials = await FirebaseAuth.instance
+                    .signInWithEmailAndPassword(
+                        email: email, password: password);
+                print(userCredentials);
+              } on FirebaseAuthException catch (e) {
+                if (e.code == 'user-not-found') {
+                  print('User Not Found!');
+                } else {
+                  print('Wrong Password!');
+                }
+              }
+            },
+            child: const Text('Login'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                '/register',
+                (route) => false,
               );
-            default:
-              return const Text('Loading...');
-          }
-        },
+              // Navigator.pushNamed(context, '/register');
+            },
+            child: const Text('Not registered yet ? register here'),
+          ),
+        ],
       ),
     );
   }
