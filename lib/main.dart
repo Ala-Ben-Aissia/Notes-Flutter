@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:project0/constants/routes.dart';
 import 'package:project0/views/login_view.dart';
 import 'package:project0/views/register_view.dart';
 import 'package:project0/views/verify_email_view.dart';
@@ -22,9 +23,9 @@ void main() {
         ),
         home: const HomePage(),
         routes: {
-          '/notes': (context) => const NotesView(),
-          '/login': (context) => const LoginView(),
-          '/register': (context) => const RegisterView(),
+          notesRoute: (context) => const NotesView(),
+          loginRoute: (context) => const LoginView(),
+          registerRoute: (context) => const RegisterView(),
         }),
   );
 }
@@ -87,7 +88,7 @@ class _NotesViewState extends State<NotesView> {
                     FirebaseAuth.instance.signOut(); // await
                     if (context.mounted) {
                       Navigator.of(context).pushNamedAndRemoveUntil(
-                        '/login',
+                        loginRoute,
                         (route) => false,
                       );
                     }
@@ -137,3 +138,4 @@ Future<bool> showLogoutDialog(BuildContext context) {
   neither the android phones return button)
   */
 }
+

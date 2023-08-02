@@ -1,10 +1,8 @@
 // import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'dart:developer' as devtools show log;
-// import 'package:project0/main.dart';
-// import 'package:project0/views/register_view.dart';
-// import '../firebase_options.dart';
+import '../constants/routes.dart';
+import '../utilities/show_error_dialog.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -64,16 +62,32 @@ class _LoginViewState extends State<LoginView> {
                     email: email, password: password);
                 if (context.mounted) {
                   Navigator.of(context).pushNamedAndRemoveUntil(
-                    '/notes',
+                    notesRoute,
                     (route) => false,
                   );
                 }
               } on FirebaseAuthException catch (e) {
                 if (e.code == 'user-not-found') {
-                  devtools.log('USER NOT FOUND!');
+                  await showErrorDialog(
+                    context,
+                    'WRONG EMAIL',
+                  );
+                } else if (e.code == 'wrong-password') {
+                  await showErrorDialog(
+                    context,
+                    'WRONG PASSWORD',
+                  );
                 } else {
-                  devtools.log('WRONG PASSWORD');
+                  await showErrorDialog(
+                    context,
+                    'Error: ${e.code}',
+                  );
                 }
+              } catch (e) { // exceptions other then firebase onces
+                await showErrorDialog(
+                  context,
+                  e.toString(),
+                );
               }
             },
             child: const Text('Login'),
@@ -81,10 +95,9 @@ class _LoginViewState extends State<LoginView> {
           TextButton(
             onPressed: () {
               Navigator.of(context).pushNamedAndRemoveUntil(
-                '/register',
+                registerRoute,
                 (route) => false,
               );
-              // Navigator.pushNamed(context, '/register');
             },
             child: const Text('Not registered yet ? Register here'),
           ),
