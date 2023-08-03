@@ -26,6 +26,7 @@ void main() {
           notesRoute: (context) => const NotesView(),
           loginRoute: (context) => const LoginView(),
           registerRoute: (context) => const RegisterView(),
+          verifyRoute: (context) => const VerifyEmailView(),
         }),
   );
 }
@@ -44,7 +45,7 @@ class HomePage extends StatelessWidget {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
             final user = FirebaseAuth.instance.currentUser;
-            if (user != null) {
+            if (user != null) { // not logged in
               if (user.emailVerified) {
                 devtools.log(
                     'user: ${user.email}, verified: ${user.emailVerified}');
@@ -75,6 +76,7 @@ enum MenuActions { logout }
 class _NotesViewState extends State<NotesView> {
   @override
   Widget build(BuildContext context) {
+    devtools.log(FirebaseAuth.instance.currentUser.toString());
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Notes'),
@@ -138,4 +140,3 @@ Future<bool> showLogoutDialog(BuildContext context) {
   neither the android phones return button)
   */
 }
-

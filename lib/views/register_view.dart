@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'dart:developer' as devtools show log;
 import '../constants/routes.dart';
 import '../utilities/show_error_dialog.dart';
 
@@ -58,10 +57,13 @@ class _RegisterViewState extends State<RegisterView> {
               final email = _email.text;
               final password = _password.text;
               try {
-                final userCredentials = await FirebaseAuth.instance
-                    .createUserWithEmailAndPassword(
-                        email: email, password: password);
-                devtools.log(userCredentials.toString());
+                await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                    email: email, password: password);
+                final user = FirebaseAuth.instance.currentUser;
+                await user?.sendEmailVerification();
+                if (context.mounted) {
+                  Navigator.of(context).pushNamed('/verify');
+                }
               } on FirebaseAuthException catch (e) {
                 switch (e.code) {
                   case 'email-already-in-use':
@@ -74,12 +76,22 @@ class _RegisterViewState extends State<RegisterView> {
                       context,
                       'Password should be at least 6 characters!',
                     );
-                  default:
+                  case 'invalid-email':
                     await showErrorDialog(
                       context,
                       'Invalid Email!',
                     );
+                  default:
+                    await showErrorDialog(
+                      context,
+                      'Error: ${e.code}',
+                    );
                 }
+              } catch (e) {
+                await showErrorDialog(
+                  context,
+                  e.toString(),
+                );
               }
             },
             child: const Text('Register'),
