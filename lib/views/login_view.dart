@@ -48,7 +48,9 @@ class _LoginViewState extends State<LoginView> {
           ),
           TextField(
             controller: _password,
-            decoration: const InputDecoration(hintText: 'Password:'),
+            decoration: const InputDecoration(
+              hintText: 'Password:',
+            ),
             obscureText: true,
             enableSuggestions: false,
             autocorrect: false,
@@ -59,24 +61,28 @@ class _LoginViewState extends State<LoginView> {
               final password = _password.text;
               try {
                 await FirebaseAuth.instance.signInWithEmailAndPassword(
-                    email: email, password: password);
+                  email: email,
+                  password: password,
+                );
                 final user = FirebaseAuth.instance.currentUser;
-                  if (context.mounted) {
-                    if (user?.emailVerified ?? false) {
-                      Navigator.of(context).pushNamedAndRemoveUntil(
-                        notesRoute,
-                        (route) => false,
-                      );
-                    } else {
-                      Navigator.of(context).pushNamedAndRemoveUntil(verifyRoute,
-                      (route) => false);
-                    }
+                if (context.mounted) {
+                  if (user?.emailVerified ?? false) {
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                      notesRoute,
+                      (route) => false,
+                    );
+                  } else {
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                      verifyRoute,
+                      (route) => false,
+                    );
                   }
+                }
               } on FirebaseAuthException catch (e) {
                 if (e.code == 'user-not-found') {
                   await showErrorDialog(
                     context,
-                    'WRONG EMAIL',
+                    'USER NOT FOUND',
                   );
                 } else if (e.code == 'wrong-password') {
                   await showErrorDialog(
