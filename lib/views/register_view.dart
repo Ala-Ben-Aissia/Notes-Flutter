@@ -47,7 +47,9 @@ class _RegisterViewState extends State<RegisterView> {
           ),
           TextField(
             controller: _password,
-            decoration: const InputDecoration(hintText: 'Password:'),
+            decoration: const InputDecoration(
+              hintText: 'Password:',
+            ),
             obscureText: true,
             enableSuggestions: false,
             autocorrect: false,
@@ -62,7 +64,8 @@ class _RegisterViewState extends State<RegisterView> {
                 final user = FirebaseAuth.instance.currentUser;
                 await user?.sendEmailVerification();
                 if (context.mounted) {
-                  Navigator.of(context).pushNamed('/verify');
+                  Navigator.of(context).pushNamed(verifyRoute);
+                  // with a back button in case of regret
                 }
               } on FirebaseAuthException catch (e) {
                 switch (e.code) {
@@ -97,11 +100,14 @@ class _RegisterViewState extends State<RegisterView> {
             child: const Text('Register'),
           ),
           TextButton(
-              onPressed: () {
-                Navigator.of(context)
-                    .pushNamedAndRemoveUntil(loginRoute, (route) => false);
-              },
-              child: const Text('Already registered ? Login here'))
+            onPressed: () {
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                loginRoute,
+                (route) => false,
+              );
+            },
+            child: const Text('Already registered ? Login here'),
+          )
         ],
       ),
     );
