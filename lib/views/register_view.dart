@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:project0/services/auth/auth_exceptions.dart';
+import 'package:project0/services/auth/auth_service.dart';
 import '../constants/routes.dart';
 import '../utilities/show_error_dialog.dart';
 
@@ -59,41 +60,33 @@ class _RegisterViewState extends State<RegisterView> {
               final email = _email.text;
               final password = _password.text;
               try {
-                await FirebaseAuth.instance.createUserWithEmailAndPassword(
-                    email: email, password: password);
-                final user = FirebaseAuth.instance.currentUser;
-                await user?.sendEmailVerification();
-                if (context.mounted) {
+                await AuthService.firebase().createUser(
+                  email: email,
+                  password: password,
+                );
+                await AuthService.firebase().sendEmailVerification();
+                if (!mounted) return;
                   Navigator.of(context).pushNamed(verifyRoute);
                   // with a back button in case of regret
-                }
-              } on FirebaseAuthException catch (e) {
-                switch (e.code) {
-                  case 'email-already-in-use':
-                    await showErrorDialog(
-                      context,
-                      'Email Already Taken!',
-                    );
-                  case 'weak-password':
-                    await showErrorDialog(
-                      context,
-                      'Password should be at least 6 characters!',
-                    );
-                  case 'invalid-email':
-                    await showErrorDialog(
-                      context,
-                      'Invalid Email!',
-                    );
-                  default:
-                    await showErrorDialog(
-                      context,
-                      'Error: ${e.code}',
-                    );
-                }
-              } catch (e) {
+              } on EmailAlreadyInUseAuthException {
                 await showErrorDialog(
                   context,
-                  e.toString(),
+                  'Email Already Taken!',
+                );
+              } on WeakPasswordAuthException {
+                await showErrorDialog(
+                  context,
+                  'Password should be at least 6 characters!',
+                );
+              } on InvalidEmailAuthException {
+                await showErrorDialog(
+                  context,
+                  'Invalid Email!',
+                );
+              } on GenericAuthException {
+                await showErrorDialog(
+                  context,
+                  'Registration error!',
                 );
               }
             },

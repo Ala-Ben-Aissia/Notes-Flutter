@@ -1,10 +1,22 @@
 import 'package:firebase_auth/firebase_auth.dart'
     show FirebaseAuth, FirebaseAuthException;
+import 'package:firebase_core/firebase_core.dart';
+import 'package:project0/firebase_options.dart';
 import 'package:project0/services/auth/auth_exceptions.dart';
 import 'package:project0/services/auth/auth_provider.dart';
 import 'package:project0/services/auth/auth_user.dart';
 
+// NOTE: after AuthService implementation we no longer need to declare the user
+
 class FirebaseAuthProvide implements AuthProvider {
+
+  @override
+  Future<void> initialize() async {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  }
+
   @override
   Future<AuthUser> createUser({
     required String email,
@@ -59,6 +71,7 @@ class FirebaseAuthProvide implements AuthProvider {
       );
       final user = currentUser; // this getter is optional (can be null)
       if (user != null) {
+        // if user is verified
         return user;
       } else {
         throw UserNotLoggedInAuthException();
@@ -79,7 +92,7 @@ class FirebaseAuthProvide implements AuthProvider {
   @override
   Future<void> logOut() async {
     final user = FirebaseAuth.instance
-        .currentUser; // after registration in email verfication user can also logout
+        .currentUser; // after registration (in email verfication) user can also logout
     if (user != null) {
       // user can be unverfied
       await FirebaseAuth.instance.signOut();

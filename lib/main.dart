@@ -1,12 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:project0/constants/routes.dart';
+import 'package:project0/services/auth/auth_service.dart';
 import 'package:project0/views/login_view.dart';
 import 'package:project0/views/register_view.dart';
 import 'package:project0/views/verify_email_view.dart';
-import 'firebase_options.dart';
-import 'dart:developer' as devtools show log;
+import 'package:project0/views/notes_view.dart';
 
 void main() {
   WidgetsFlutterBinding
@@ -38,17 +36,14 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return FutureBuilder(
       // once future is performed, call the builder (which will return a view Widget)
-      future: Firebase.initializeApp(
-          options: DefaultFirebaseOptions.currentPlatform),
+      future: AuthService.firebase().initialize(),
       builder: (context, snapshot) {
         // snapshot => state of future
         switch (snapshot.connectionState) {
           case ConnectionState.done:
-            final user = FirebaseAuth.instance.currentUser;
+            final user = AuthService.firebase().currentUser;
             if (user != null) { // not logged in
-              if (user.emailVerified) {
-                devtools.log(
-                    'user: ${user.email}, verified: ${user.emailVerified}');
+              if (user.isEmailVerified) {
                 return const NotesView();
               } else {
                 return const VerifyEmailView();
@@ -62,81 +57,4 @@ class HomePage extends StatelessWidget {
       },
     );
   }
-}
-
-class NotesView extends StatefulWidget {
-  const NotesView({super.key});
-
-  @override
-  State<NotesView> createState() => _NotesViewState();
-}
-
-enum MenuActions { logout }
-
-class _NotesViewState extends State<NotesView> {
-  @override
-  Widget build(BuildContext context) {
-    devtools.log(FirebaseAuth.instance.currentUser.toString());
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('My Notes'),
-        actions: [
-          PopupMenuButton(
-            onSelected: (value) async {
-              switch (value) {
-                case MenuActions.logout:
-                  final shouldLogout = await showLogoutDialog(context);
-                  if (shouldLogout) {
-                    FirebaseAuth.instance.signOut(); // await
-                    if (context.mounted) {
-                      Navigator.of(context).pushNamedAndRemoveUntil(
-                        loginRoute,
-                        (route) => false,
-                      );
-                    }
-                  }
-              }
-            },
-            itemBuilder: (BuildContext context) => [
-              const PopupMenuItem(
-                value: MenuActions.logout,
-                child: Text('Log out'),
-              ),
-            ],
-          )
-        ],
-      ),
-      body: const Text('Note List'),
-    );
-  }
-}
-
-// Logout dialog function
-
-Future<bool> showLogoutDialog(BuildContext context) {
-  return showDialog<bool>(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: const Text('You\'re about to Log out ...'),
-        content: const Text('Are you sure?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Yes'),
-          )
-        ],
-      );
-    },
-  ).then((value) =>
-      value ??
-      false); /* if the showDialog did not return any 
-  result ('cancel' and 'yes' onPressed function) THEN it will return false 
-  ==> only the two TextButtons are available for pressing (not the body press
-  neither the android phones return button)
-  */
 }
