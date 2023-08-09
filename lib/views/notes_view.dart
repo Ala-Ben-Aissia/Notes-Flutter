@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:project0/services/auth/auth_service.dart';
+import 'package:project0/services/crud/notes_service.dart';
 import '../constants/routes.dart';
 import '../enums/menu_actions.dart';
 
@@ -11,6 +12,24 @@ class NotesView extends StatefulWidget {
 }
 
 class _NotesViewState extends State<NotesView> {
+  late final NotesService _notesService;
+
+  String get userEmail => AuthService.firebase()
+      .currentUser!
+      .email!; // just pass we are okay (at this moment)
+
+  @override
+  void initState() {
+    _notesService = NotesService(); // instance (see _shared in notes_service)
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _notesService.close();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,7 +60,27 @@ class _NotesViewState extends State<NotesView> {
           )
         ],
       ),
-      body: const Text('Note List'),
+      body: FutureBuilder(
+        future: _notesService.getOrCreateUser(email: userEmail),
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.done: // user is ready ... no problem here
+              return StreamBuilder(
+                stream: _notesService.allNotes,
+                builder: (context, snapshot) {
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.waiting:
+                      return const Text('Waiting for notes');
+                    default:
+                      return const CircularProgressIndicator();
+                  }
+                },
+              );
+            default:
+              return const CircularProgressIndicator();
+          }
+        },
+      ),
     );
   }
 }
