@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:project0/services/auth/auth_service.dart';
 import 'package:project0/services/crud/notes_service.dart';
-import '../constants/routes.dart';
-import '../enums/menu_actions.dart';
+import '../../constants/routes.dart';
+import '../../enums/menu_actions.dart';
 
 class NotesView extends StatefulWidget {
   const NotesView({super.key});
@@ -20,7 +20,9 @@ class _NotesViewState extends State<NotesView> {
 
   @override
   void initState() {
-    _notesService = NotesService(); // instance (see _shared in notes_service)
+    _notesService = NotesService();
+    // After creating the SINGLETON (notes_service),
+    // the _notesService instance is created from private contructor (see _shared in notes_service)
     super.initState();
   }
 
@@ -36,6 +38,14 @@ class _NotesViewState extends State<NotesView> {
       appBar: AppBar(
         title: const Text('My Notes'),
         actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).pushNamed(
+                createNoteRoute,
+              );
+            },
+            icon: const Icon(Icons.add),
+          ),
           PopupMenuButton(
             onSelected: (value) async {
               switch (value) {
@@ -57,12 +67,13 @@ class _NotesViewState extends State<NotesView> {
                 child: Text('Log out'),
               ),
             ],
-          )
+          ),
         ],
       ),
       body: FutureBuilder(
         future: _notesService.getOrCreateUser(email: userEmail),
         builder: (context, snapshot) {
+          AppBar();
           switch (snapshot.connectionState) {
             case ConnectionState.done: // user is ready ... no problem here
               return StreamBuilder(

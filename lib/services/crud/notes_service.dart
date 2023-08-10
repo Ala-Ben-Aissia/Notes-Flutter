@@ -15,11 +15,11 @@ class NotesService {
   final _notesStreamController = // the gate of _notes to the UI ( READ EXTERNALLY)
       StreamController<List<DatabaseNote>>.broadcast();
 
-  // Singleton
-  static final NotesService _shared = NotesService._sharedInstance();
-  // this factory constructor promise to return an object of this type (NoteService)
-  factory NotesService() => _shared; 
-  NotesService._sharedInstance();
+  // SINGLETON => class instance to ensure that this service (NotesService) is unique to this specific class (Only one copy of this process logic)
+  // without SINGLETON we can basically create a NotesService instance anywhere (That's why we are using the private instance '_shared')
+  NotesService._sharedInstance(); // private constructor (initializer)
+  static final NotesService _shared = NotesService._sharedInstance(); // the one and only instance
+  factory NotesService() => _shared;   // this factory constructor promise to return an object of this type (NoteService)
 
   Future<void> _cacheNote() async {
     final allNotes = await getAllNotes();
