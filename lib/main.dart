@@ -6,7 +6,7 @@ import 'package:project0/views/register_view.dart';
 import 'package:project0/views/verify_email_view.dart';
 import 'package:project0/views/notes/notes_view.dart';
 
-import 'views/notes/create_note.dart';
+import 'views/notes/create_update_note.dart';
 
 void main() {
   WidgetsFlutterBinding
@@ -27,7 +27,7 @@ void main() {
           loginRoute: (context) => const LoginView(),
           registerRoute: (context) => const RegisterView(),
           verifyRoute: (context) => const VerifyEmailView(),
-          createNoteRoute: (context) => const CreateNote(),
+          createOrUpdateNoteRoute: (context) => const CreateUpdateNote(),
         }),
   );
 }

@@ -15,3 +15,5 @@ class CouldNotDeleteUser implements Exception {}
 class CouldNotDeleteNote implements Exception {}
 
 class CouldNotUpdateNote implements Exception {}
+
+class UserShouldBeSetBeforeReadingAllNotes implements Exception {}
