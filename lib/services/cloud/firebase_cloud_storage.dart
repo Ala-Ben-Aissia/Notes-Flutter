@@ -24,24 +24,25 @@ class FirebaseCloudStorage {
           )
           .get() // takes ansnapshot at a point of time and returns it
           .then(
-            (value) => value.docs.map(
-              (doc) => CloudNote(
-                documentId: doc.id,
-                ownerUserId: doc.data()[ownerUserIdFieldName],
-                text: doc.data()[textFieldName],
-              ),
-            ),
+            (value) => value.docs.map((doc) => CloudNote.fromSnapshot(doc)),
           );
     } catch (e) {
       throw CouldNotGetAllNoteaException();
     }
   }
 
-  void createNote({required String userId}) async {
-    await notes.add({
+  Future<CloudNote> createNote({required String userId}) async {
+    final document = await notes.add({
       ownerUserIdFieldName: userId,
       textFieldName: '',
     });
+    final fetchedNote = await document
+        .get(); // the actual snapshot (contains the data of this document)
+    return CloudNote(
+      documentId: fetchedNote.id,
+      ownerUserId: userId,
+      text: '',
+    );
   }
 
   Future<void> updateNote({
@@ -68,6 +69,9 @@ class FirebaseCloudStorage {
   }
 
   // SINGLETON
+  // without SINGLETON we can basically create a FirebaseCloudStorage instance anywhere,
+  // That's why we use the private instance '_shared' & the private constructor '_sharedInstance'
+  // the one and only instance
   FirebaseCloudStorage._sharedInstance();
   static final FirebaseCloudStorage _shared =
       FirebaseCloudStorage._sharedInstance();
