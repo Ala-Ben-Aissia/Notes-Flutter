@@ -98,6 +98,5 @@ class _NotesViewState extends State<NotesView> {
   }
 }
 
-// Logout dialog function
 
 
