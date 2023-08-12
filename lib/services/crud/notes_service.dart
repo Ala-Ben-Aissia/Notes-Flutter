@@ -213,7 +213,8 @@ class NotesService {
         }
       });
 
-  // SINGLETON => class instance to ensure that this service (NotesService) is unique to this specific class (Only one copy of this process logic)
+  // SINGLETON => class instance to ensure that this service (NotesService) is unique to this specific class ,
+  // (Only one copy of this process logic)
   // without SINGLETON we can basically create a NotesService instance anywhere,
   // That's why we use the private instance '_shared' & the private constructor '_sharedInstance'
   // the one and only instance
