@@ -6,7 +6,7 @@ import 'package:project0/services/cloud/cloud_storage_exceptions.dart';
 class FirebaseCloudStorage {
   final notes = FirebaseFirestore.instance.collection('notes');
 
-  // to make the data of the notes collection updated in real time , we use the snapshots() (subscribe to it)
+  // to make the data of the notes collection updated in real-time , we use the snapshots() (subscribe to it)
   Stream<Iterable<CloudNote>> allNotes({required String userId}) {
     return notes.snapshots().map(
           (event) => event.docs

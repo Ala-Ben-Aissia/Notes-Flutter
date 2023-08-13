@@ -23,8 +23,6 @@ class _NotesViewState extends State<NotesView> {
   @override
   void initState() {
     _notesService = FirebaseCloudStorage();
-    // After creating the SINGLETON (notes_service),
-    // the _notesService instance is created from private contructor (see _shared in notes_service)
     super.initState();
   }
 
@@ -97,6 +95,3 @@ class _NotesViewState extends State<NotesView> {
     );
   }
 }
-
-
-
