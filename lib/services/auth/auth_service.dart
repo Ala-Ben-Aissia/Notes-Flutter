@@ -9,7 +9,7 @@ class AuthService implements AuthProvider {
   final AuthProvider provider;
   AuthService(this.provider);
   factory AuthService.firebase() => AuthService(
-        FirebaseAuthProvide(),
+        FirebaseAuthProvider(),
       );
 
   @override

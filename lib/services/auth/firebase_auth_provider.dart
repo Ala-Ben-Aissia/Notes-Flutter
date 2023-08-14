@@ -8,7 +8,7 @@ import 'package:project0/services/auth/auth_user.dart';
 
 // NOTE: after AuthService implementation we no longer need to declare the user
 
-class FirebaseAuthProvide implements AuthProvider {
+class FirebaseAuthProvider implements AuthProvider {
 
   @override
   Future<void> initialize() async {
