@@ -7,15 +7,12 @@ void main() {
     MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-          // colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          // useMaterial3: true,
-          primarySwatch: Colors.blue,
-        ),
+        primarySwatch: Colors.blue,
+      ),
       home: const HomePage(),
     ),
   );
 }
-
 
 class HomePage extends StatefulWidget {
   // const HomePage({Key? key}) : super(key: key);
@@ -165,4 +162,3 @@ class CounterBloc extends Bloc<CounterEvent, CounterState> {
     );
   }
 }
-
