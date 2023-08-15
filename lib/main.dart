@@ -29,10 +29,6 @@ void main() {
           child: const HomePage(),
         ),
         routes: {
-          notesRoute: (context) => const NotesView(),
-          loginRoute: (context) => const LoginView(),
-          registerRoute: (context) => const RegisterView(),
-          verifyRoute: (context) => const VerifyEmailView(),
           createOrUpdateNoteRoute: (context) => const CreateUpdateNote(),
         }),
   );
@@ -52,9 +48,11 @@ class HomePage extends StatelessWidget {
           return const VerifyEmailView();
         } else if (state is AuthStateLoggedOut) {
           return const LoginView();
+        } else if (state is AuthStateRegistering) {
+          return const RegisterView();
         } else {
           return const Scaffold(
-            body: CircularProgressIndicator.adaptive(),
+            body: CircularProgressIndicator(),
           );
         }
       },

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:project0/constants/routes.dart';
-import 'package:project0/services/auth/auth_service.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../services/bloc/auth_bloc.dart';
+import '../services/bloc/auth_event.dart';
 
 class VerifyEmailView extends StatefulWidget {
   const VerifyEmailView({super.key});
@@ -12,7 +13,6 @@ class VerifyEmailView extends StatefulWidget {
 class _VerifyEmailViewState extends State<VerifyEmailView> {
   @override
   Widget build(BuildContext context) {
-    // final user = FirebaseAuth.instance.currentUser;
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -28,19 +28,18 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
             'If you have not received your verification, click the button below',
           ),
           TextButton(
-            onPressed: () async {
-              await AuthService.firebase().sendEmailVerification();
+            onPressed: () {
+              context.read<AuthBloc>().add(
+                    const AuthEventSendEmailVerification(),
+                  );
             },
             child: const Text('Re-send Email Verification'),
           ),
           TextButton(
-            onPressed: () async {
-              await AuthService.firebase().logOut();
-              if (!mounted) return;
-              Navigator.of(context).pushNamedAndRemoveUntil(
-                loginRoute,
-                (route) => false,
-              );
+            onPressed: () {
+              context.read<AuthBloc>().add(
+                    const AuthEventLogout(),
+                  );
             },
             child: const Text('Restart'),
           )
