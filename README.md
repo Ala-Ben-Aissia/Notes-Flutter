@@ -1,6 +1,11 @@
 # Notes Flutter App
 
-A new Flutter project.
+COMPLETE NOTES APPLICATION :
+Firebase integration
+Auth services
+Cloud firestore
+Bloc pattern state management
+Every commit have its own tag
 
 ## Getting Started
 
