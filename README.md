@@ -1,11 +1,11 @@
 # Notes Flutter App
 
 COMPLETE NOTES APPLICATION :
-Firebase integration
-Auth services
-Cloud firestore
-Bloc pattern state management
-Every commit have its own tag
+- Firebase integration
+- Auth services
+- Cloud firestore
+- Bloc pattern state management
+- Every commit have its own tag
 
 ## Getting Started
 
